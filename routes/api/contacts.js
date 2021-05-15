@@ -22,7 +22,7 @@ router.get('/', async (_req, res, next) => {
 router.get('/:contactId', validateObjectId, async (req, res, next) => {
   try {
     const contact = await Contacts.getContactById(req.params.contactId);
-    console.log(contact); // toObject
+    // console.log(contact); // toObject
     if (contact) {
       return res
         .status(200)
