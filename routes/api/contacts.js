@@ -4,6 +4,8 @@ const Contacts = require('../../model/contacts');
 const {
   validateCreateContact,
   validateUpdateContact,
+  validateObjectId,
+  validateStatusFavoriteContact,
 } = require('./validation');
 
 router.get('/', async (_req, res, next) => {
@@ -17,13 +19,14 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
-router.get('/:contactId', async (req, res, next) => {
+router.get('/:contactId', validateObjectId, async (req, res, next) => {
   try {
     const contact = await Contacts.getContactById(req.params.contactId);
+    // console.log(contact); // toObject
     if (contact) {
       return res
         .status(200)
-        .json({ status: 'success', code: 200, data: { contact } });
+        .json({ status: 'success', code: 200, data: { contact } }); // toJSON
     }
     return res
       .status(404)
@@ -35,13 +38,6 @@ router.get('/:contactId', async (req, res, next) => {
 
 router.post('/', validateCreateContact, async (req, res, next) => {
   try {
-    // if (!req.body.name) {
-    //   return res.status(400).json({
-    //     status: 'error',
-    //     code: 400,
-    //     message: 'missing required name field',
-    //   });
-    // }
     const contact = await Contacts.addContact(req.body);
     return res
       .status(201)
@@ -51,7 +47,7 @@ router.post('/', validateCreateContact, async (req, res, next) => {
   }
 });
 
-router.delete('/:contactId', async (req, res, next) => {
+router.delete('/:contactId', validateObjectId, async (req, res, next) => {
   try {
     const contact = await Contacts.removeContact(req.params.contactId);
     if (contact) {
@@ -67,28 +63,60 @@ router.delete('/:contactId', async (req, res, next) => {
   }
 });
 
-router.put('/:contactId', validateUpdateContact, async (req, res, next) => {
-  try {
-    // if (!req.body.name && !req.body.email && !req.body.phone) {
-    //   return res
-    //     .status(400)
-    //     .json({ status: 'error', code: 400, message: 'missing fields' });
-    // }
-    const contact = await Contacts.updateContact(
-      req.params.contactId,
-      req.body,
-    );
-    if (contact) {
+router.put(
+  '/:contactId',
+  validateUpdateContact,
+  validateObjectId,
+  async (req, res, next) => {
+    try {
+      const contact = await Contacts.updateContact(
+        req.params.contactId,
+        req.body,
+      );
+      if (contact) {
+        return res
+          .status(200)
+          .json({ status: 'success', code: 200, data: { contact } });
+      }
       return res
-        .status(200)
-        .json({ status: 'success', code: 200, data: { contact } });
+        .status(404)
+        .json({ status: 'error', code: 404, message: 'Not found' });
+    } catch (error) {
+      next(error);
     }
-    return res
-      .status(404)
-      .json({ status: 'error', code: 404, message: 'Not found' });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
+
+router.patch(
+  '/:contactId/favorite',
+  validateStatusFavoriteContact,
+  validateObjectId,
+  async (req, res, next) => {
+    try {
+      if (!req.body.favorite) {
+        return res.status(400).json({
+          status: 'error',
+          code: 400,
+          message: 'missing field favorite',
+        });
+      }
+      const contact = await Contacts.updateStatusContact(
+        req.params.contactId,
+        req.body,
+      );
+      if (contact) {
+        return res
+          .status(200)
+          .json({ status: 'success', code: 200, data: { contact } });
+      }
+
+      return res
+        .status(404)
+        .json({ status: 'error', code: 404, message: 'Not found' });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 module.exports = router;
