@@ -1,8 +1,10 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+const { HttpCode } = require('../../../helpers/constants');
+
 const schemaCreateContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).required(),
+  name: Joi.string().min(2).max(30).required(),
 
   email: Joi.string().optional(),
   //   email: Joi.string().email({
@@ -19,7 +21,7 @@ const schemaCreateContact = Joi.object({
 });
 
 const schemaUpdateContact = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).optional(),
+  name: Joi.string().min(2).max(30).optional(),
 
   email: Joi.string().optional(),
   //   email: Joi.string().email({
@@ -43,17 +45,22 @@ const validate = async (schema, body, next) => {
     await schema.validateAsync(body);
     next();
   } catch (err) {
-    next({ status: 400, message: `Field: ${err.message.replace(/"/g, '')}` });
+    next({
+      status: HttpCode.BAD_REQUEST,
+      message: `Field: ${err.message.replace(/"/g, '')}`,
+    });
   }
 };
 
-const validateId = (id, next) => {
-  if (mongoose.isValidObjectId(id)) {
+const validateId = async (id, next) => {
+  if (await mongoose.isValidObjectId(id)) {
     next();
     return;
   }
-
-  next({ status: 400, message: 'Id is not valid' });
+  next({
+    status: HttpCode.BAD_REQUEST,
+    message: `Id is not valid`,
+  });
 };
 
 module.exports.validateCreateContact = (req, _res, next) => {
