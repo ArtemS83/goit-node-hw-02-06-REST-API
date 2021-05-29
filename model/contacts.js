@@ -40,7 +40,8 @@ const listContacts = async (userId, query) => {
 };
 
 const getContactById = async (userId, contactId) => {
-  const result = await Contact.findById({
+  // const result = await Contact.findById({
+  const result = await Contact.findOne({
     _id: contactId,
     owner: userId,
   }).populate({ path: 'owner', select: 'name email subscription -_id' }); // .populate({}) позволяет показывать не просто id пользователя, а ту информацию,кот.указываем в select, "-"-убирает ненужные поля
@@ -48,7 +49,8 @@ const getContactById = async (userId, contactId) => {
 };
 
 const removeContact = async (userId, contactId) => {
-  const result = await Contact.findByIdAndRemove({
+  // const result = await Contact.findByIdAndRemove({
+  const result = await Contact.findOneAndRemove({
     _id: contactId,
     owner: userId,
   });
@@ -61,7 +63,8 @@ const addContact = async body => {
 };
 
 const updateContact = async (userId, contactId, body) => {
-  const result = await Contact.findByIdAndUpdate(
+  // const result = await Contact.findByIdAndUpdate(
+  const result = await Contact.findOneAndUpdate(
     { _id: contactId, owner: userId },
     { ...body },
     { new: true },
