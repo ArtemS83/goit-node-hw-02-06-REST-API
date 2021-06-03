@@ -6,6 +6,7 @@ const db = mongoose.connect(uriDb, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  useFindAndModify: true,
   poolsize: 5,
 });
 
@@ -22,11 +23,10 @@ mongoose.connection.on('disconnected', () => {
 });
 
 process.on('SIGINT', async () => {
-  mongoose.connection.close(()=>{
- console.log('Disconnect MongoDB');
-  process.exit();
+  mongoose.connection.close(() => {
+    console.log('Disconnect MongoDB');
+    process.exit();
   });
- 
 });
 
 module.exports = db;

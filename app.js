@@ -3,10 +3,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const boolParser = require('express-query-boolean');
 const helmet = require('helmet');
+
 const limiter = require('./helpers/limiter');
-
-const { HttpCode } = require('./helpers/constants');
-
+const { HttpCode, Limit } = require('./helpers/constants');
 const usersRouter = require('./routes/api/users');
 const contactsRouter = require('./routes/api/contacts');
 
@@ -18,7 +17,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(logger(formatsLogger));
 app.use(cors());
-app.use(express.json({ limit: 10000 }));
+app.use(express.json({ limit: Limit.MAX_JSON_SIZE_15KB }));
 app.use(boolParser());
 app.use('/api/users', usersRouter);
 app.use('/api/contacts', contactsRouter);
