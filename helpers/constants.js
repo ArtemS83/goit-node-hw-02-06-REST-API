@@ -20,6 +20,7 @@ const Limit = {
   MAX_JSON_SIZE_15KB: 15000,
   MAX_REQUEST_EACH_IP: 100,
   TIME_15_MINUT: 15 * 60 * 1000,
+  MAX_SIZE_AVATARS_2MB: 2000000,
 };
 
 module.exports = { HttpCode, Subscription, Limit };
