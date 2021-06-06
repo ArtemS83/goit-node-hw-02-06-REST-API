@@ -5,6 +5,7 @@ const {
   validateLogin,
   validateSignup,
   validateStatusSubscription,
+  validateAvatar,
 } = require('./validation');
 const guard = require('../../../helpers/guard');
 const ctrl = require('../../../controllers/users');
@@ -15,6 +16,11 @@ router.post('/login', validateLogin, ctrl.login);
 router.post('/logout', guard, ctrl.logout);
 router.get('/current', guard, ctrl.current);
 router.patch('/', guard, validateStatusSubscription, ctrl.subscription);
-router.patch('/avatars', [guard, upload.single('avatar')], ctrl.avatars); // 'avatar'- name в инпуте формы name="avatar"
+router.patch(
+  '/avatars',
+  [guard, upload.single('avatar')],
+  validateAvatar,
+  ctrl.avatars,
+); // 'avatar'- name в инпуте формы name="avatar"
 
 module.exports = router;
