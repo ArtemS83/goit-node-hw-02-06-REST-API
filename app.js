@@ -1,4 +1,4 @@
-const path = require('path');
+// const path = require('path');
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
@@ -11,7 +11,7 @@ const usersRouter = require('./routes/api/users');
 const contactsRouter = require('./routes/api/contacts');
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'public'))); // http://localhost:3000/avatars/60b8ba1e7daf461fe0076565//1622841975237-photo.jpg
+// app.use(express.static(path.join(__dirname, 'public'))); // http://localhost:3000/avatars/60b8ba1e7daf461fe0076565//1622841975237-photo.jpg
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 

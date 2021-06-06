@@ -55,7 +55,6 @@ const remove = async (req, res, next) => {
   const contactId = req.params.contactId;
   try {
     const contact = await Contacts.removeContact(userId, contactId);
-    console.log(contact);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',

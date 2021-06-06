@@ -1,11 +1,22 @@
-const path = require('path'); //
+// const path = require('path'); //
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
+const { promisify } = require('util'); // пакет node, парсит колбеки
+
 require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
-const UploadAvatar = require('../services/upload-avatars-local');
+// const UploadAvatar = require('../services/upload-avatars-local');
+const UploadAvatar = require('../services/upload-avatars-cloud');
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-const AVATARS_OF_USERS = path.join('public', process.env.AVATARS_OF_USERS); //
+
+// const AVATARS_OF_USERS = path.join('public', process.env.AVATARS_OF_USERS);
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 const signup = async (req, res, next) => {
   try {
@@ -128,15 +139,26 @@ const subscription = async (req, res, next) => {
 const avatars = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    // console.log(req.file);
-    const uploads = new UploadAvatar(AVATARS_OF_USERS);
-    const avatarURL = await uploads.seveAvatarToStatic({
-      idUser: userId,
-      pathFile: req.file.path,
-      name: req.file.filename,
-      oldFile: req.user.avatarURL,
-    });
-    await Users.updateAvatar(userId, avatarURL);
+
+    const uploadCloud = promisify(cloudinary.uploader.upload);
+
+    const uploads = new UploadAvatar(uploadCloud);
+
+    const { userImgId, avatarURL } = await uploads.saveAvatarToCloud(
+      req.file.path,
+      req.user.userImgId,
+    );
+    await Users.updateAvatar(userId, avatarURL, userImgId);
+    // ============static===========
+    // const uploads = new UploadAvatar(AVATARS_OF_USERS);
+    // const avatarURL = await uploads.seveAvatarToStatic({
+
+    //   idUser: userId,
+    //   pathFile: req.file.path,
+    //   name: req.file.filename,
+    //   oldFile: req.user.avatarURL,
+    // });
+    // await Users.updateAvatar(userId, avatarURL);
     return res.status(HttpCode.OK).json({
       status: 'success ',
       code: HttpCode.OK,

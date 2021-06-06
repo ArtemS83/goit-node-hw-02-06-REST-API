@@ -53,6 +53,10 @@ const userSchema = new Schema(
         );
       },
     },
+    userImgId: {
+      type: String,
+      default: null,
+    },
   },
   {
     versionKey: false,
