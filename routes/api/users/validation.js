@@ -28,6 +28,17 @@ const schemaSubscription = Joi.object({
     .valid(Subscription.STARTER, Subscription.PRO, Subscription.BUSINESS)
     .required(),
 });
+const schemaAvatar = Joi.object({
+  fieldname: Joi.string().required(),
+  originalname: Joi.string().required(),
+  encoding: Joi.string().required(),
+  mimetype: Joi.string().required(),
+  destination: Joi.string().required(),
+  filename: Joi.string().required(),
+  path: Joi.string().required(),
+  size: Joi.number().required(),
+}).required();
+// const schemaAvatar = Joi.any().required();
 
 const validate = async (schema, body, next) => {
   try {
@@ -49,4 +60,9 @@ module.exports.validateLogin = (req, _res, next) => {
 };
 module.exports.validateStatusSubscription = (req, _res, next) => {
   return validate(schemaSubscription, req.body, next);
+};
+
+module.exports.validateAvatar = (req, _res, next) => {
+  console.log('🚀 ~ file: validation.js ~ line 60 ~ req.file', req.file);
+  return validate(schemaAvatar, req.file, next);
 };
