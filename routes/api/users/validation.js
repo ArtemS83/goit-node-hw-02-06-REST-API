@@ -63,6 +63,5 @@ module.exports.validateStatusSubscription = (req, _res, next) => {
 };
 
 module.exports.validateAvatar = (req, _res, next) => {
-  console.log('🚀 ~ file: validation.js ~ line 60 ~ req.file', req.file);
   return validate(schemaAvatar, req.file, next);
 };

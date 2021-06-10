@@ -1,6 +1,6 @@
-const { expectCt } = require('helmet');
 const { update } = require('../controllers/contacts');
 const Contacts = require('../model/contacts');
+const { HttpCode } = require('../helpers/constants');
 
 jest.mock('../model/contacts');
 
@@ -17,7 +17,7 @@ describe('Unit test contacts controllers', () => {
     const result = await update(req, res, next);
 
     expect(result.status).toEqual('error');
-    expect(result.code).toEqual(404);
+    expect(result.code).toEqual(HttpCode.NOT_FOUND);
     expect(result.message).toEqual('Not found');
   });
 
@@ -26,7 +26,7 @@ describe('Unit test contacts controllers', () => {
     const result = await update(req, res, next);
 
     expect(result.status).toEqual('success');
-    expect(result.code).toEqual(200);
+    expect(result.code).toEqual(HttpCode.OK);
     expect(result.data).toEqual({ contact: true });
   });
 
