@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const { uuid } = require('uuidv4');
 const gravatar = require('gravatar');
 const { Subscription } = require('../../helpers/constants');
 const bcrypt = require('bcryptjs');
@@ -56,6 +57,15 @@ const userSchema = new Schema(
     userImgId: {
       type: String,
       default: null,
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+      required: [true, 'Verify token is required'],
+      default: uuid(),
     },
   },
   {

@@ -40,6 +40,14 @@ const schemaAvatar = Joi.object({
 }).required();
 // const schemaAvatar = Joi.any().required();
 
+const schemaEmail = Joi.object({
+  email: Joi.string().required(),
+  //   email: Joi.string().email({
+  //     minDomainSegments: 6,
+  //     tlds: { allow: ['com', 'net', 'ua','ru'] },
+  //   }).required(),
+});
+
 const validate = async (schema, body, next) => {
   try {
     await schema.validateAsync(body);
@@ -64,4 +72,8 @@ module.exports.validateStatusSubscription = (req, _res, next) => {
 
 module.exports.validateAvatar = (req, _res, next) => {
   return validate(schemaAvatar, req.file, next);
+};
+
+module.exports.validateEmail = (req, _res, next) => {
+  return validate(schemaEmail, req.body, next);
 };
