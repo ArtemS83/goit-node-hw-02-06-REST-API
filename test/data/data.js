@@ -2,6 +2,7 @@ const newContact = {
   name: 'XXXXX',
   email: 'xxxxx@x.com',
   phone: '0000-000-000',
+  favorite: false,
 };
 
 const newUser = {
@@ -11,9 +12,7 @@ const newUser = {
 };
 
 const newUser2 = {
-  name: 'newUser2',
   email: 'newUser2@gmail.com',
-  subscription: 'pro',
   password: '1234567',
 };
 
